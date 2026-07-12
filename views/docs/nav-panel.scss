@@ -1,0 +1,28 @@
+.nav-panel {
+  min-height: calc(100vh - 7rem);
+  padding-top: 2rem;
+  font-family: $font-face-header;
+  @media (max-width: $responsive-mobile-browser-width) {
+    min-height: auto;
+  }
+}
+
+.nav-group-title, .nav-link {
+  display: block;
+  color: var(--color-text);
+  padding: 0.2em 0.5em;
+  text-transform: uppercase;
+
+  &:before {
+    content: '/ ';
+  }
+
+  &:hover {
+    color: var(--color-highlight)
+  }
+
+  &.selected {
+    cursor: default;
+    color: var(--color-highlight);
+  }
+}

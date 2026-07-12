@@ -1,0 +1,3 @@
+# header description file for Cloudflare Pages
+/.well-known/stellar.toml
+  Access-Control-Allow-Origin: *

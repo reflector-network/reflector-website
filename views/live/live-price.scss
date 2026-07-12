@@ -1,0 +1,7 @@
+.live-price {
+  font-size: 1.4rem;
+
+  @media (min-width: $screen-xl) {
+    font-size: 1.8rem;
+  }
+}

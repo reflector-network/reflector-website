@@ -1,0 +1,147 @@
+.hero-text {
+  color: transparent !important;
+  -webkit-text-stroke: 1px #fff;
+  text-transform: uppercase;
+  transform: scaleY(140%);
+  line-height: 0.8;
+  opacity: 0.8;
+  letter-spacing: -0.05em;
+  margin-top: 0.7em;
+  user-select: none;
+
+  /*&:before{
+    content: attr(data-text);
+    -webkit-text-stroke: 1px var(--color-highlight);
+    opacity: 0.4;
+    position: absolute;
+    transform: translate(3px, 3px);
+  }*/
+}
+
+.hero-description {
+  color: var(--color-text);
+  opacity: 0.4;
+  margin-top: -1.2em;
+  margin-bottom: 1.6em;
+
+  @media (max-width: $responsive-mobile-browser-width) {
+    margin-top: -0.6em;
+    text-align: center;
+  }
+}
+
+h1.hero-text {
+  font-size: 12vw;
+
+  @media (max-width: $responsive-mobile-browser-width) {
+    font-size: 24vmin;
+  }
+}
+
+h2.hero-text {
+  font-size: 6vw;
+  margin: 0.4em 0;
+
+  @media (max-width: $responsive-mobile-browser-width) {
+    font-size: 18vmin;
+    margin-top: 1.2em;
+  }
+}
+
+.sub-hero-text {
+  font-size: 4vw;
+  text-transform: uppercase;
+  transform: scaleY(140%);
+  line-height: 1;
+  user-select: none;
+  @media (max-width: $responsive-mobile-browser-width) {
+    font-size: 8vmin;
+  }
+}
+
+.case-scroller {
+  overflow: hidden;
+  height: 1em;
+
+  > div {
+    line-height: 1em;
+    animation: v-scroller 14s linear infinite;
+  }
+}
+
+.vertical-distribution {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+@keyframes v-scroller {
+  0%, 19% {
+    transform: translateY(-5em);
+    opacity: 1;
+  }
+  19.01% {
+    opacity: 0;
+  }
+  20%, 39% {
+    transform: translateY(-4em);
+    opacity: 1;
+  }
+  39.01% {
+    opacity: 0;
+  }
+  40%, 59% {
+    transform: translateY(-3em);
+    opacity: 1;
+  }
+  59.01% {
+    opacity: 0;
+  }
+  60%, 79% {
+    transform: translateY(-2em);
+    opacity: 1;
+  }
+  79.01% {
+    opacity: 0;
+  }
+  80%, 99% {
+    transform: translateY(-1em);
+    opacity: 1;
+  }
+  99.01% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.separator {
+  position: relative;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 5%;
+    left: -10%;
+    border: 1px solid #fff;
+    height: 90%;
+    width: 10px;
+    transform: skew(-14deg);
+  }
+}
+
+.screen-type-1 {
+  position: relative;
+  min-height: 100vh;
+  z-index: 1;
+
+  @media (max-width: $screen-md) {
+    h1 {
+      text-align: center !important;
+    }
+  }
+}

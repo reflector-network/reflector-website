@@ -1,0 +1,141 @@
+.approach {
+  h2 {
+    margin-top: 0.4em;
+  }
+
+  .item {
+    text-transform: uppercase;
+    position: relative;
+    width: 18em;
+    padding: 1em;
+    margin-top: 1em;
+
+    &.top-left, &.top-right {
+      border-bottom: 2px solid var(--color-highlight);
+      margin-bottom: 8em;
+    }
+
+    &.bottom-left, &.bottom-right {
+      border-top: 2px solid var(--color-highlight);
+      margin-top: 8em;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-highlight);
+      z-index: 1;
+    }
+
+    &.top-left {
+      text-align: right;
+      margin-left: auto;
+
+      &:before {
+        top: calc(100% - 4px);
+        right: -4px;
+      }
+    }
+
+    &.top-right {
+
+      &:before {
+        top: calc(100% - 4px);
+        left: -4px;
+      }
+    }
+
+    &.bottom-left {
+      text-align: right;
+      margin-left: auto;
+
+      &:before {
+        top: -6px;
+        right: -4px;
+      }
+    }
+
+    &.bottom-right {
+      &:before {
+        top: -6px;
+        left: -4px;
+      }
+    }
+  }
+
+  div.logo-center {
+    width: 100%;
+    display: flex;
+
+    img {
+      width: 50%;
+      margin: auto;
+      display: block;
+    }
+  }
+
+  @media (max-width: $responsive-mobile-browser-width) {
+    .item {
+      display: block;
+      width: 100%;
+      border: none !important;
+      margin: 0 !important;
+      text-align: center !important;
+
+      &:before {
+        content: none;
+      }
+
+      &:after {
+
+      }
+    }
+  }
+
+  @media (min-width: $responsive-mobile-browser-width) {
+    .item {
+      &:after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: 50px;
+        background: var(--color-highlight);
+      }
+
+      &.top-left {
+        &:after {
+          top: calc(100% - 6px);
+          right: -18px;
+          transform: rotate(-45deg);
+        }
+      }
+
+      &.top-right {
+        &:after {
+          top: calc(100% - 6px);
+          left: -18px;
+          transform: rotate(45deg);
+        }
+      }
+
+      &.bottom-left {
+        &:after {
+          top: -44px;
+          right: -18px;
+          transform: rotate(45deg);
+        }
+      }
+
+      &.bottom-right {
+        &:after {
+          top: -44px;
+          left: -18px;
+          transform: rotate(-45deg);
+        }
+      }
+    }
+  }
+}

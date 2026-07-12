@@ -1,0 +1,30 @@
+VERSION="2.0.0"
+
+NETWORK_PASSPHRASE="Public Global Stellar Network ; September 2015"
+ACCOUNTS=[
+"GCHI6I3X62ND5XUMWINNNKXS2HPYZWKFQBZZYBSMHJ4MIP2XJXSZTXRF",
+"GDSRHC7U5XWNGHDML6SBU7HXLH67ILO7PCCCFMN55PPBYYCZEAU4FXR",
+"GC5O5HNISV6KIVGF42K4GOFSHVUAOIMXM5RF43KXLRZFXGGKMPUGISA6"
+]
+
+[DOCUMENTATION]
+ORG_NAME="Reflector"
+ORG_URL="https://reflector.network"
+ORG_LOGO="https://reflector.network/images/logo.svg"
+ORG_DESCRIPTION="Reflector is a decentralized system and data exchange protocol that provides a reliable tamper-proof oracle price feed service for smart contracts and other applications by aggregating price information from multiple on-chain and off-chain data sources."
+ORG_TWITTER="in_reflector"
+ORG_GITHUB="reflector-network"
+ORG_OFFICIAL_EMAIL="info@stellar.expert"
+
+# asset with meta info
+[[CURRENCIES]]
+code="XRF"
+issuer="GCHI6I3X62ND5XUMWINNNKXS2HPYZWKFQBZZYBSMHJ4MIP2XJXSZTXRF"
+display_decimals=7
+name="Reflector XRF token"
+desc="XRF token is a utility cryptocurrency token for Reflector oracles network issued by the decentralized autonomous organization (DAO) consisting of organizations and individuals that maintain Reflector server nodes, participate in the cluster consensus, and control Reflector governance."
+conditions="Cluster operators receive tokens for participating in the consensus mechanism and providing their computational resources to aggregate, validate, certify, and publish token price information. Correspondingly, accrued tokens represent the equivalent of computational resources contributed by each party. Reflector node operators unanimously agreed to create XRF tokens issued on Stellar Network and disburse them between the initial distribution recipients in a form of claimable balances. Subsequently, the token issuance account is locked, no tokens will be created in the future."
+image="https://reflector.network/images/logo.svg"
+fixed_number=120000000
+is_unlimited=false
+status="live"

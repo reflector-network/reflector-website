@@ -1,0 +1,79 @@
+[
+  {
+    "title": "Blend",
+    "icon": "blend.svg",
+    "category": "Lending",
+    "url": "https://blend.capital",
+    "description": "Universal liquidity protocol primitive. Anyone can use it to deploy lending pools with whatever assets and specifications they need.\nThere's no DAO or protocol management — markets are secured and kept efficient by protocol wide insurance and capital efficiency mechanisms.\nBlend avoids the normal pitfalls of permissionless lending markets by using a market-driven backstop system to curate pools, ensuring appropriate risk levels, and using a dynamic interest rate model to preserve capital efficiency.\nRisk segmentation achieved by logically separating positions in isolated pools from all other pools, meaning collateral and debt associated with one isolated pool does not apply to others."
+  },
+  {
+    "title": "Orbit CDP",
+    "icon": "orbitcdp.svg",
+    "category": "Collateralized Stablecoins",
+    "url": "https://orbitcdp.finance",
+    "description": "CDP-based stablecoin system, where users mint fiat-pegged assets (e.g., oUSD, oMXN) by locking XLM or tokenized bonds as collateral in Blend lending pools. The Treasury contract handles minting, while a pegkeepers contract uses flash loans and AMMs to maintain pegs via automated liquidations.\nInterest rates adjust dynamically based on pool utilization, and risk is mitigated through overcollateralization, oracle-fed pricing, and pool-specific backstop modules that serve as first-loss capital, ensuring stability and capital efficiency."
+  },
+  {
+    "title": "DeFindex",
+    "icon": "defindex.svg",
+    "category": "Yield Aggregators",
+    "url": "https://www.defindex.io",
+    "description": "Modular, smart contract-based platform that enables wallet providers to offer diversified DeFi investment strategies via one-click vault deposits. It abstracts away protocol-specific complexity through a unified vault factory and strategy architecture, where investment logic (e.g., auto-compounding with Blend) is encoded in reusable strategy contracts.\nUsers interact through a single transaction to allocate capital across integrated DeFi protocols, while backend keepers monitor vault health and trigger automated rescue actions if risk thresholds are breached."
+  },
+  {
+    "title": "Laina",
+    "icon": "laina.svg",
+    "category": "Lending",
+    "url": "https://laina-de.fi",
+    "description": "Decentralized lending protocol optimized for single-token lending pools to reduce liquidity fragmentation and remove the need for multi-asset swaps. Users can deposit supported assets (e.g., XLM) as collateral and borrow against them, with interest rates dynamically adjusted per pool utilization.\nCollateral can be swapped mid-loan via on-chain integrations with DEX aggregators like Soroswap, enabling dynamic risk management.\nAn open-source liquidation bot architecture ensures protocol solvency by monitoring health factors and executing liquidations in real time."
+  },
+  {
+    "title": "EquitX",
+    "icon": "equitx.svg",
+    "category": "Synthetics",
+    "url": "https://equitx.com",
+    "description": "Synthetic asset platform that allows users to mint xAssets—tokenized representations of small-cap equities—by overcollateralizing XLM. Its smart contracts manage collateralization, liquidation, and stability pools, ensuring capital efficiency and risk mitigation through automated CDP logic and decentralized price oracles.\nStability pools reward users for absorbing undercollateralized positions, while a governance layer enables decentralized onboarding of new assets.\n xAssets are tradable on Stellar DEXs, and a full indexing and analytics backend provides transparency across asset health, trading volume, and protocol performance."
+  },
+  {
+    "title": "SorobanDomains",
+    "icon": "sorobandomains.svg",
+    "category": "Infrastructure",
+    "url": "https://sorobandomains.org",
+    "description": "Soroban Domains is a simple protocol that allows the registry of domains to be used on the Soroban network. This way users can enjoy shorter and easy to remember names like satoshi.xlm instead of long addresses that are hard to remember or share.\nAny soroban domain owner can put their own domains for sale or on the other hand, those who would like to buy a domain that is already registered can create an offer for such domain."
+  },
+  {
+    "title": "Etherfuse",
+    "icon": "etherfuse.svg",
+    "category": "Yield Stablecoins",
+    "url": "https://etherfuse.com",
+    "description": "Blockchain platform that tokenizes real-world government bonds, bridging traditional finance (TradFi) and decentralized finance (DeFi).\n Etherfuse Stablebonds are tokenized treasury bonds that give retail investors direct, transparent access to government debt instruments on-chain — assets that look like fiat, act like bonds, and move like crypto. \nEtherfuse Sovereign Coins are customizable stablecoins fully backed by those tokenized government bonds, designed for secure on-chain transactions and payments."
+  },
+  {
+    "title": "Normal",
+    "icon": "normal.svg",
+    "category": "Yield Aggregators",
+    "url": "https://normalfinance.io",
+    "description": "Universal on-chain investing app that lets users trade, earn yield, and diversify across global asset classes — including cryptocurrencies, equities, commodities, FX pairs, and ETFs — all through a single interface powered by USDC.\nKey features include long and short positions on any supported asset, index funds that automatically rebalance diversified baskets tracking specific themes or strategies, a yield-earning function, and developer-facing DeFi primitives for integrating hedging and diversification into third-party applications.\nUsers can deposit and withdraw via partners like MoneyGram, Coinbase, and Onramper, or transfer USDC directly. No KYC is required to create an account or trade."
+  },
+  {
+    "title": "Stratum",
+    "icon": "stratum.svg",
+    "category": "Wallets",
+    "url": "https://stellar-stratum.xyz",
+    "description": "Professional Stellar multisig wallet for secure multi-signature transaction management. It provides a web-based interface for setting up and managing multi-signature accounts on the Stellar blockchain.\nFlexible multi-sig add an additional layer of security for organizations, joint accounts, or individuals who want an extra layer of protection.\nStratum handles the complexity of configuring signer weights, thresholds, and transaction approval workflows that Stellar's protocol supports natively, packaging it into a more accessible management tool with support of air-gapped signing."
+  },
+  {
+    "title": "xBidAI",
+    "icon": "xbid.svg",
+    "category": "AI Trading",
+    "url": "https://xbid.ai",
+    "description": "Multi-LLM AI agent that operates on-chain, executing real strategies across varied domains with inference framed by context and real outcomes. \nThe platform combines multiple large language models into an autonomous agent that stakes its intelligence on-chain, width all decisions and performance transparently recorded on the blockchain.\nAI agent can also trade in-game items like tokenized cards, heroes, and badges directly on Stellar."
+  },
+  {
+    "title": "Slender",
+    "icon": "slender.svg",
+    "category": "Lending",
+    "url": "https://slender.fi",
+    "description": "Lend & borrow Soroban-native crypto assets at a fair interest. Use flash loans to borrow atomically without any collateral involved.\nSlender lending protocol uses a pool-based strategy that aggregates each user's supplied assets. Balances in each market accrue interest based on the supply interest rate unique to that market. The supply interest rate depends on the utilization of the market and generally follows a hyperbolic curve approaching some prohibitively high value when utilization approaches 100%.\nSlender enables users to borrow from the protocol with over-collateralized loans. Each borrowing market has a floating interest rate, determined by the utilization of that market's assets."
+  }
+]
