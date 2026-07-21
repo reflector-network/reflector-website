@@ -6,9 +6,9 @@ The primary goal of forced position liquidation is to protect the lender's inter
         code: `pub fn check_liquidation(env: Env, reflector_contract_id: Address, loan: Loan, liquidation_threshold: i128) {
     // loan position example
     // {
-    //    collateral_asset: Asset::Generic(Symbol::new(&env, "BTC")),
+    //    collateral_asset: Asset::Other(Symbol::new(&env, "BTC")),
     //    collateral_amount: 10753533963_i128,
-    //    borrowed_asset: Asset::Generic(Symbol::new(&env, "ETH")),
+    //    borrowed_asset: Asset::Other(Symbol::new(&env, "ETH")),
     //    borrowed_amount: 154850889072_i128
     // }
 
@@ -47,9 +47,14 @@ Properly functioning liquidation mechanisms are essential for the long-term viab
     // create oracle client instance
     let reflector_contract = PriceOracleClient::new(&env, &reflector_contract_id);
 
-    // fetch TWAP-approximated external price for the associated reference ticker
-    let coin = Asset::Generic(Symbol::new(&env, "CHF"));
-    let reference_price = reflector_contract.twap(&coin, &5).unwrap();
+    // fetch recent price records for the reference ticker and average them (consumer-side TWAP)
+    let coin = Asset::Other(Symbol::new(&env, "CHF"));
+    let recent = reflector_contract.prices(&coin, &5).unwrap();
+    let mut sum = 0_i128;
+    for record in recent.iter() {
+        sum += record.price;
+    }
+    let reference_price = sum / (recent.len() as i128);
 
     // take action if the price diverts more than 0.1% from the reference price
     let threshold = reference_price / 1000_i128;
