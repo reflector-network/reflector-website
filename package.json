@@ -5,7 +5,8 @@
   "description": "Documentation website / Reflector / decentralized price oracle for Stellar Network",
   "scripts": {
     "build": "webpack --mode=production --config ./webpack-config.js",
-    "dev-server": "webpack serve --mode development --config ./webpack-config.js"
+    "dev-server": "webpack serve --mode development --config ./webpack-config.js",
+    "test": "node --test tests/*.test.cjs"
   },
   "author": "team@stellar.expert",
   "license": "MIT",

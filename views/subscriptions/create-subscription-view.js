@@ -1,7 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {AssetLink, Button, Dropdown} from '@stellar-expert/ui-framework'
 import {shortenString} from '@stellar-expert/formatter'
 import {navigation} from '@stellar-expert/navigation'
+import {finishAction, tryStartAction} from '../action-guard'
 import AuthStateView from '../auth/auth-state-view'
 import {getSubscriptionDataSources} from './oracles'
 import {createSubscription} from './subscription-actions'
@@ -12,16 +13,34 @@ export default function CreateSubscriptionView() {
     const [quote, setQuote] = useState()
     const [heartbeat, setHeartbeat] = useState(30)
     const [threshold, setThreshold] = useState(1)
-    const [balance, setBalance] = useState('10')
+    const [balance, setBalance] = useState('30')
     const [webhook, setWebhook] = useState('')
     const [inProgress, setInProgress] = useState(false)
+    const [loadError, setLoadError] = useState()
+    const [loadAttempt, setLoadAttempt] = useState(0)
+    const submissionStarted = useRef(false)
 
-    const network = 'tesntet'
+    const network = 'public'
+    const retryLoad = useCallback(() => setLoadAttempt(attempt => attempt + 1), [])
 
     useEffect(() => {
+        let cancelled = false
+        setOracleInfo(null)
+        setLoadError(null)
         getSubscriptionDataSources(network)
-            .then(res => setOracleInfo(res))
-    }, [network])
+            .then(res => {
+                if (!cancelled)
+                    setOracleInfo(res)
+            })
+            .catch(error => {
+                console.error(error)
+                if (!cancelled)
+                    setLoadError('Flare feed metadata is temporarily unavailable.')
+            })
+        return () => {
+            cancelled = true
+        }
+    }, [loadAttempt, network])
 
     const changeThreshold = useCallback(e => {
         let v = parseFloat(e.target.value)
@@ -35,18 +54,17 @@ export default function CreateSubscriptionView() {
     }, [setThreshold])
 
     const changeHeartbeat = useCallback(e => {
-        try {
-            let v = parseInt(e.target.value)
-            setHeartbeat(v || 0)
-        } catch (e) {
-        }
+        const v = parseInt(e.target.value, 10)
+        setHeartbeat(v || 0)
     }, [setHeartbeat])
 
-    if (!oracleInfo)
-        return <div className="loader"/>
+    const changeBalance = useCallback(e => setBalance(e.target.value.trim()), [setBalance])
+    const changeWebhook = useCallback(e => setWebhook(e.target.value.trim()), [setWebhook])
+    const canProceed = Boolean(base && quote && webhook && threshold && balance && !inProgress)
 
-
-    function create() {
+    const create = useCallback(() => {
+        if (!canProceed || !tryStartAction(submissionStarted))
+            return
         setInProgress(true)
         createSubscription({
             quote,
@@ -66,15 +84,29 @@ export default function CreateSubscriptionView() {
                 notify({type: 'error', message: e.message ? 'Execution error: ' + e.message : e})
                 console.error(e)
             })
-            .finally(() => setInProgress(false))
-    }
+            .finally(() => {
+                finishAction(submissionStarted)
+                setInProgress(false)
+            })
+    }, [balance, base, canProceed, heartbeat, quote, threshold, webhook])
 
-    const canProceed = base && quote && webhook && threshold && balance
+    if (loadError)
+        return <div className="segment warning" role="alert">
+            <div>{loadError}</div>
+            <div className="row space">
+                <div className="column column-50"><Button block onClick={retryLoad}>Retry</Button></div>
+                <div className="column column-50"><Button block outline href="/flare">Back to Flare</Button></div>
+            </div>
+        </div>
+    if (!oracleInfo)
+        return <div className="loader" role="status" aria-label="Loading Flare feed metadata"/>
 
     return <div>
         <h2>
             / Create subscription
-            {inProgress && <div className="loader inline" style={{margin: '0 1em', verticalAlign: 'middle'}}/>}
+            {Boolean(inProgress) && <span className="loader inline" role="status"
+                                          aria-label="Creating subscription"
+                                          style={{margin: '0 1em', verticalAlign: 'middle'}}/>}
         </h2>
         <hr className="flare"/>
 
@@ -87,14 +119,15 @@ export default function CreateSubscriptionView() {
             </div>
         </div>
         <div className="text-tiny dimmed micro-space">
-            <>The reference price is calculated as <b><code>quote/base</code></b> price ratio</>
+            The reference price is calculated as <b><code>quote/base</code></b> price ratio
         </div>
         <div className="row">
             <div className="column column-50">
                 <div className="space">
-                    <span>Trigger threshold: </span>
+                    <label htmlFor="flare-threshold">Trigger threshold: </label>
                     <div className="mobile-only"/>
-                    <input type="number" min={0.1} max={1000} step={0.1} style={{width: '8em'}} value={threshold} onChange={changeThreshold}/>
+                    <input id="flare-threshold" type="number" min={0.1} max={1000} step={0.1}
+                           style={{width: '8em'}} value={threshold} onChange={changeThreshold}/>
                     <span className="dimmed"> %</span>
                     <div className="dimmed text-tiny">
                         Relative price deviation that will trigger the notification, compared to the previous reported price
@@ -103,9 +136,10 @@ export default function CreateSubscriptionView() {
             </div>
             <div className="column column-50">
                 <div className="space">
-                    <span>Heartbeat interval: </span>
+                    <label htmlFor="flare-heartbeat">Heartbeat interval: </label>
                     <div className="mobile-only"/>
-                    <input type="number" min={0} max={240} style={{width: '8em'}} value={heartbeat} onChange={changeHeartbeat}/>
+                    <input id="flare-heartbeat" type="number" min={5} max={240} style={{width: '8em'}}
+                           value={heartbeat} onChange={changeHeartbeat}/>
                     <span className="dimmed"> minutes</span>
                     <div className="dimmed text-tiny">
                         Interval of periodic notifications that will be delivered even without the price change
@@ -114,20 +148,22 @@ export default function CreateSubscriptionView() {
             </div>
         </div>
         <div className="space">
-            <div>Initial balance:</div>
+            <label htmlFor="flare-deposit">Initial balance:</label>
             <div className="mobile-only"/>
-            <input type="text" className="text-right" style={{width: '7em'}} value={balance}
-                   onChange={e => setBalance(e.target.value.trim())}/>XRF
+            <input id="flare-deposit" type="text" inputMode="decimal" className="text-right"
+                   style={{width: '7em'}} value={balance}
+                   onChange={changeBalance}/> XRF
             <div className="text-tiny dimmed">
-                The amount of subscription tokens to deposit into the contract — the tokens will be charged from the subscription balance on
-                the daily basis, and the subscription will remain active while the subscription has positive remaining balance
+                The amount of XRF to deposit into the contract. Tokens are charged from the balance on a daily basis, and
+                the subscription remains active while its remaining balance stays positive.
             </div>
         </div>
         <div className="space">
-            <div>Webhook URL:</div>
-            <textarea style={{width: '100%'}} value={webhook} onChange={(e) => setWebhook(e.target.value.trim())}/>
+            <label htmlFor="flare-webhook">Webhook URL:</label>
+            <textarea id="flare-webhook" style={{width: '100%'}} value={webhook}
+                      onChange={changeWebhook}/>
             <div className="text-tiny dimmed">
-                Once the subscription is triggered, cluster nodes will send POST HTTP request to the provided webhook URL
+                Once the subscription is triggered, cluster nodes will send a POST HTTP request to the provided webhook URL.
             </div>
         </div>
         <div className="space">
@@ -135,7 +171,7 @@ export default function CreateSubscriptionView() {
         </div>
         <div className="double-space row">
             <div className="column column-50">
-                <Button block disabled={!canProceed} onClick={create}>Create</Button>
+                <Button block disabled={!canProceed} onClick={create}>{inProgress ? 'Creating…' : 'Create'}</Button>
             </div>
             <div className="column column-50">
                 <Button href="/flare" block>Cancel</Button>
@@ -160,17 +196,17 @@ function AssetSelector({oracleInfo, title, value, onChange}) {
             asset: selectedOracle.baseAsset.code,
             source: dataSource
         })
-    }, [setDataSource, oracleInfo])
+    }, [oracleInfo, onChange])
 
     const selectAsset = useCallback(asset => {
         onChange({
             asset,
             source: dataSource
         })
-    }, [dataSource])
+    }, [dataSource, onChange])
 
     if (!oracleInfo)
-        return <div className="loader"/>
+        return <div className="loader" role="status" aria-label={`Loading ${title} options`}/>
 
     const selectedOracle = oracleInfo.oracles[dataSource]
     let symbols = []
@@ -188,12 +224,16 @@ function AssetSelector({oracleInfo, title, value, onChange}) {
 
     const selector = !symbols?.length ?
         <span className="dimmed">unavailable</span> :
-        <Dropdown options={symbolOptions} value={value.asset} onChange={selectAsset}/>
+        <Dropdown options={symbolOptions} value={value?.asset} onChange={selectAsset}/>
 
-    return <div className="space">
-        <span>Data source: </span>
-        <Dropdown options={oracleOptions} value={dataSource} title={dataSource ? selectedOracle.title : 'Choose price feed'} onChange={selectOracle}/>
-        <div className="micro-space">
+    return <div className="space" role="group" aria-label={title}>
+        <div role="group" aria-label={`${title} data source`}>
+            <span>Data source: </span>
+            <Dropdown options={oracleOptions} value={dataSource}
+                      title={dataSource ? selectedOracle.title : `Choose ${title.toLowerCase()} price feed`}
+                      onChange={selectOracle}/>
+        </div>
+        <div className="micro-space" role="group" aria-label={`${title} symbol`}>
             <span>{title}: </span> {selector}
         </div>
     </div>

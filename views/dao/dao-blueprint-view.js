@@ -32,10 +32,10 @@ export default function DaoBlueprintView() {
                     Cluster operators receive tokens for participating in the consensus mechanism and providing their computational
                     resources to aggregate, validate, certify, and publish token price information. Correspondingly, accrued tokens
                     represent the equivalent of computational resources contributed by each party. These tokens can be used for Reflector
-                    cluster governance voting and subscription services.
+                    cluster governance voting and Flare subscription services.
                 </p>
                 <p>
-                    Reflector subscriptions provide advanced automation functionality and observability for price feeds, offering a
+                    Flare subscriptions provide advanced automation functionality and observability for price feeds, offering a
                     framework for customizable developer-defined reactions on price changes.
                 </p>
 
@@ -53,7 +53,7 @@ export default function DaoBlueprintView() {
                     contribution in governance and transaction validation.
                 </p>
 
-                <h3 id="price-feed-subscriptions">Price Feed Subscriptions</h3>
+                <h3 id="price-feed-subscriptions">Flare Oracle</h3>
                 <p>
                     Oracle contracts controlled by the Reflector cluster periodically publish price feed updates in the form of
                     blockchain transactions, which is suitable for the wide range of smart contracts. However, in many cases applications
@@ -61,8 +61,8 @@ export default function DaoBlueprintView() {
                     underlying price movements in order to react faster on such changes.
                 </p>
                 <p>
-                    Price Feed Subscriptions service provides advanced capabilities for such demanding usage scenarios. DeFi protocol
-                    developers can create a Reflector subscription for a certain trading pair with a predefined threshold (the relative size
+                    The Flare oracle provides advanced capabilities for such demanding usage scenarios. DeFi protocol
+                    developers can create a Flare subscription for a certain trading pair with a predefined threshold (the relative size
                     of the price movement that triggers an update). Once it is triggered, cluster nodes will validate preconditions and send
                     HTTP requests to the webhook defined in the subscription, allowing Stellar DeFi applications to react immediately on the
                     price change – perform computation, invoke some contract, take any other actions. Webhook is essentially a URL endpoint
@@ -82,7 +82,7 @@ export default function DaoBlueprintView() {
                 </p>
                 <p>
                     Reflector DAO employs XRF tokens in key governance areas. All such interactions are carried out through the
-                    governance smart contract (DAO contract) or price feed subscription contract (Subscription contract). XRF tokens spent
+                    governance smart contract (DAO contract) or Flare subscription contract (Subscription contract). XRF tokens spent
                     in the process are permanently taken out of circulation without the possibility to recover them in the future
                     ("burned"), representing spent computational resources equivalent.
                 </p>
@@ -143,9 +143,9 @@ export default function DaoBlueprintView() {
                     </tbody>
                 </table>
 
-                <h4>Subscriptions contract</h4>
+                <h4>Flare subscription contract</h4>
                 <p>
-                    The process of subscription creation and maintenance involves XRF token deposit (required to keep it active) supplied by
+                    The process of Flare subscription creation and maintenance involves XRF token deposit (required to keep it active) supplied by
                     the creator of the subscription. The first charge is performed upon the subscription creation, with subsequent charges
                     conducted on a daily basis by the automated service. Each upkeep charge extends the lifetime of the subscription for 24
                     hours. When the remaining XRF deposit for a given subscription falls under the upkeep amount, the subscription becomes
@@ -262,7 +262,7 @@ export default function DaoBlueprintView() {
                 <QA question="Do you sell XRF tokens? Can I buy them?">
                     DAO doesn’t sell or distribute XRF tokens to any third parties. The primary goal of the token distribution is to empower
                     members backing the Reflector existence with universal instruments for the Reflector governance. Token recipients can do
-                    whatever they want with their tokens – utilize them for governance, pay for their subscriptions, endorse other projects
+                    whatever they want with their tokens – utilize them for governance, pay for their Flare subscriptions, endorse other projects
                     by donating tokens to these projects, sell tokens on the open market, or burn them. Once tokens leave the DAO contract,
                     Reflector DAO does not control them anymore.
                 </QA>

@@ -1,6 +1,7 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {AssetLink, Button, UtcTimestamp} from '@stellar-expert/ui-framework'
-import {shortenString} from '@stellar-expert/formatter'
+import {fromStroops, shortenString} from '@stellar-expert/formatter'
+import {finishAction, tryStartAction} from '../action-guard'
 import {getOwnSubscriptions, removeOwnSubscription} from './subscriptions-storage'
 import {cancelSubscription, loadSubscription} from './subscription-actions'
 
@@ -11,7 +12,7 @@ export default function SubscriptionsView() {
     return <div>
         <div className="row">
             <div className="column column-60">
-                <h2>/ Subscriptions</h2>
+                <h2>/ Flare</h2>
             </div>
             <div className="column column-40">
                 <Button href="/flare/add" block className="space">Create new subscription</Button>
@@ -19,7 +20,7 @@ export default function SubscriptionsView() {
         </div>
         <hr className="flare"/>
         {!ids.length ? <div className="dimmed text-center text-small double-space">
-            (you don't have active subscriptions so far)
+            (you don&apos;t have active subscriptions so far)
         </div> : <div>
             {ids.map(id => <SubscriptionView id={id} key={id} onCancel={onSubscriptionCancelled}/>)}
         </div>}
@@ -28,14 +29,35 @@ export default function SubscriptionsView() {
 
 function SubscriptionView({id, onCancel}) {
     const [subscription, setSubscription] = useState()
+    const [loadError, setLoadError] = useState()
     const [processingCancellation, setProcessingCancellation] = useState(false)
+    const cancellationStarted = useRef(false)
     useEffect(() => {
+        let cancelled = false
+        setSubscription(null)
+        setLoadError(null)
         loadSubscription(id)
-            .then(subscription => setSubscription(subscription))
+            .then(nextSubscription => {
+                if (!cancelled)
+                    setSubscription(nextSubscription)
+            })
+            .catch(error => {
+                console.error(error)
+                if (!cancelled)
+                    setLoadError('Unable to load this subscription.')
+            })
+        return () => {
+            cancelled = true
+        }
     }, [id])
-    const cancel = useCallback(() => {
-        if (!confirm('Do you really want to cancel this subscription?'))
+    const cancel = useCallback(event => {
+        event.preventDefault()
+        if (!tryStartAction(cancellationStarted))
             return
+        if (!confirm('Do you really want to cancel this subscription?')) {
+            finishAction(cancellationStarted)
+            return
+        }
         setProcessingCancellation(true)
         cancelSubscription(id)
             .then(() => {
@@ -43,7 +65,6 @@ function SubscriptionView({id, onCancel}) {
                     type: 'success',
                     message: 'Subscription has been cancelled and the remaining tokens balance has been refunded to the owner\'s account'
                 })
-                removeOwnSubscription(id)
                 onCancel()
             })
             .catch(e => {
@@ -51,9 +72,12 @@ function SubscriptionView({id, onCancel}) {
                 console.error(e)
             })
             .finally(() => {
+                finishAction(cancellationStarted)
                 setProcessingCancellation(false)
             })
-    }, [id])
+    }, [id, onCancel])
+    if (loadError)
+        return <div className="dimmed text-small space" role="alert">Unable to load this subscription.</div>
     if (!subscription)
         return null
     if (subscription.status === 'suspended') {
@@ -66,7 +90,8 @@ function SubscriptionView({id, onCancel}) {
                 <h3>Subscription {id.toString()} <span className="text-small">({subscription.status})</span></h3>
             </div>
             <div className="micro-space">
-                <a href="#" title="Cancel subscription" className="icon-delete-circle" onClick={cancel}/>
+                <a href="#" title="Cancel subscription" aria-disabled={processingCancellation}
+                   className="icon-delete-circle" onClick={cancel}/>
             </div>
         </div>
         <div className="row">
@@ -83,7 +108,7 @@ function SubscriptionView({id, onCancel}) {
         </div>
         <div className="row">
             <div className="column column-50">
-                <span className="dimmed">Remaining balance: </span>{subscription.balance.toString()}
+                <span className="dimmed">Remaining balance: </span>{fromStroops(subscription.balance)} XRF
             </div>
             <div className="column column-50">
                 <span className="dimmed">Last update: </span><UtcTimestamp date={subscription.updated}/>
@@ -97,9 +122,7 @@ function SubscriptionTicker({ticker, prefix}) {
     return <div className="column column-50">
         <div>
             <span className="dimmed">{prefix} ticker: </span>
-            {ticker.source === 'pubnet' ? <>
-                <AssetLink asset={ticker.asset}/>
-            </> : <>
+            {ticker.source === 'pubnet' ? <AssetLink asset={ticker.asset}/> : <>
                 {ticker.source.toUpperCase()}:{shortenString(ticker.asset, 12)}
             </>}
         </div>

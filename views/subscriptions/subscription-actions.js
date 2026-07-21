@@ -1,49 +1,46 @@
-import {Asset, Networks} from '@stellar/stellar-sdk'
 import {toStroops} from '@stellar-expert/formatter'
 import SubscriptionClient from '@reflector/subscription-client'
-import {addOwnSubscription, removeOwnSubscription} from './subscriptions-storage'
-import {connectWalletsKit, getCurrentAccount} from '../auth/wallet'
+import {connectWalletsKit} from '../auth/wallet'
+import {addOwnSubscription, normalizeSubscriptionId, removeOwnSubscription} from './subscriptions-storage'
+import {createFlareClientOptions} from './flare-client-options'
 
 export async function createSubscription({base, quote, heartbeat, threshold, balance, webhook}) {
-    if (!base || !quote)
+    if (!base?.asset || !base?.source || !quote?.asset || !quote?.source)
         return notify({type: 'warning', message: 'Please select base/quote price feeds'})
     balance = toStroops(balance)
-    if (!balance)
-        return notify({type: 'warning', message: 'Please specify the initial subscription balance'})
-    if (balance < 1000000)
-        return notify({type: 'warning', message: 'Initial subscription balance is too low'})
-    if (balance > 100000000000)
-        return notify({type: 'warning', message: 'Initial subscription balance is too high'})
-    if (heartbeat < 5)
+    if (balance < 300_000_000n)
+        return notify({type: 'warning', message: 'Initial XRF deposit is too low — a subscription needs at least 30 XRF'})
+    if (balance > 100_000_000_000n)
+        return notify({type: 'warning', message: 'This site limits a single initial deposit to 10,000 XRF'})
+    if (!Number.isFinite(heartbeat) || heartbeat < 5)
         return notify({type: 'warning', message: 'Heartbeat interval can\'t be smaller than 5 minutes'})
     if (heartbeat > 240)
         return notify({type: 'warning', message: 'Heartbeat interval can\'t be larger than 240 minutes'})
+    if (!Number.isFinite(threshold) || threshold < 1 || threshold > 10_000)
+        return notify({type: 'warning', message: 'Price-change threshold must be between 0.1% and 1,000%'})
+    if (!isValidFlareWebhookUrl(webhook))
+        return notify({type: 'warning', message: 'Please provide a valid HTTP or HTTPS webhook URL'})
     const client = await createClient()
     const subscription = await client.createSubscription({
         webhook,
         base,
         quote,
-        owner: getCurrentAccount(),
         heartbeat,
         threshold,
         initialBalance: balance
     })
-    console.log(subscription)
     addOwnSubscription(subscription.id)
     return true
 }
 
 export async function loadSubscription(id) {
-    try {
-        const client = await createClient(true)
-        return client.getSubscription(id)
-    } catch (e) {
-        console.error(e)
-        return null
-    }
+    id = requireSubscriptionId(id)
+    const client = await createClient(true)
+    return client.getSubscription(id)
 }
 
 export async function cancelSubscription(id) {
+    id = requireSubscriptionId(id)
     const client = await createClient()
     await client.cancel(id)
     removeOwnSubscription(id)
@@ -54,28 +51,41 @@ export async function depositToSubscription(id, amount) {
     return await client.deposit(id, amount)
 }
 
-function normalizeAsset(symbol) {
-    if (symbol.length > 52) {//stellar asset
-        const parts = symbol.split(':')
-        symbol = (parts.length === 2 ? new Asset(parts[0], parts[1]) : Asset.native()).contractId(Networks.PUBLIC) //TODO: retrieve dynamically
+export function isValidFlareWebhookUrl(value) {
+    if (typeof value !== 'string' || value.length > 2000 || hasControlCharacters(value))
+        return false
+    let url
+    try {
+        url = new URL(value)
+    } catch {
+        return false
     }
-    return symbol
+    return ['http:', 'https:'].includes(url.protocol) && Boolean(url.hostname)
+}
+
+function hasControlCharacters(value) {
+    for (let i = 0; i < value.length; i++) {
+        const code = value.charCodeAt(i)
+        if (code <= 31 || code === 127)
+            return true
+    }
+    return false
+}
+
+function requireSubscriptionId(value) {
+    const id = normalizeSubscriptionId(value)
+    if (id === null)
+        throw new Error('Invalid subscription ID')
+    return id
 }
 
 /**
+ * @param {boolean} [readonly] - Create a simulation-only client without opening the wallet modal
  * @return {Promise<SubscriptionClient>}
  */
 async function createClient(readonly = false) {
     const {address, kit} = await connectWalletsKit(readonly ? 'readonly' : 'default')
-        .catch(e => notify({type: 'error', message: e.message}))
     if (!address)
         throw new Error('Authentication required. Please log in.')
-    return new SubscriptionClient({
-        publicKey: address,
-        defaultFee: '100000',
-        callTimeout: 600,
-        rpcUrl: 'https://mainnet.sorobanrpc.com',
-        signTransaction: (xdr, opts) => kit.signTransaction(xdr, {address, networkPassphrase: opts.networkPassphrase})
-            .catch(e => notify({type: 'error', message: e.message}))
-    })
+    return new SubscriptionClient(createFlareClientOptions({address, kit}))
 }
