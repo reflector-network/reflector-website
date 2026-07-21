@@ -28,6 +28,7 @@ export default function AppRouter({history}) {
                 </Route>
                 <Route path="/dao" component={DaoRouter}/>
                 <Redirect from="/oracles" to="/pulse"/>
+                <Redirect from="/subscription/add" to="/flare/add" exact/>
                 <Redirect from="/subscription" to="/flare"/>
                 {/*not found*/}
                 <Route component={NotFoundView}/>

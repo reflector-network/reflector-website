@@ -11,7 +11,7 @@ export default function SubscriptionsLayout({children}) {
                 <div className="segment">
                     <div className="double-space"></div>
                     <p>
-                        Reflector Subscriptions is a service for user-defined customized triggers invoked
+                        The Flare oracle is a service for user-defined customized triggers invoked
                         automatically once the
                         price change for the specified asset reaches a certain threshold. Trigger conditions are evaluated by every
                         oracle node within the cluster independently on a regular basis with 1 minute polling interval,
