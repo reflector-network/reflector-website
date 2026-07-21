@@ -8,6 +8,7 @@ import {
     ALBEDO_ID,
     ModalThemes
 } from '@creit.tech/stellar-wallets-kit'
+import {isValidWalletAddress, selectWalletAccount} from './wallet-connection'
 
 const network = WalletNetwork.PUBLIC
 
@@ -26,7 +27,7 @@ const kit = new StellarWalletsKit({
 let connected
 
 /**
- * @param {'default'|'enforceWalletSelection'|'readonly'} mode
+ * @param {'default'|'enforceWalletSelection'|'readonly'} mode - Connection behavior
  * @return {Promise<{address: string, kit: StellarWalletsKit}>}
  */
 export function connectWalletsKit(mode = 'default') {
@@ -39,17 +40,21 @@ export function connectWalletsKit(mode = 'default') {
         if (connected && mode !== 'enforceWalletSelection')
             return resolve(connected)
         kit.openModal({
-            onWalletSelected: async (selected) => {
-                kit.setWallet(selected.id)
-                const {address} = await kit.getAddress()
-                localStorage.setItem('authenticated', address)
-                connected = {kit, address}
-                resolve(connected)
+            onClosed: error => reject(error || new Error('Wallet selection canceled.')),
+            onWalletSelected: selected => {
+                selectWalletAccount(kit, selected)
+                    .then(connection => {
+                        localStorage.setItem('authenticated', connection.address)
+                        connected = connection
+                        resolve(connection)
+                    })
+                    .catch(reject)
             }
-        })
+        }).catch(reject)
     })
 }
 
 export function getCurrentAccount() {
-    return localStorage.getItem('authenticated')
+    const address = localStorage.getItem('authenticated')
+    return isValidWalletAddress(address) ? address : null
 }
