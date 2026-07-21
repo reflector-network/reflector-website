@@ -51,8 +51,8 @@ export default function ContractInterfaceView() {
         <p>
             Our contracts
             implement <a href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0040.md">SEP-40</a> standard
-            trait (so they are compatible with most Stellar ecosystem protocols), extending it with additional utility functions like
-            cross-price calculation and TWAP approximation.
+            trait (so they are compatible with most Stellar ecosystem protocols), extending it with additional utility functions
+            for historical price retrieval and asset-retention management.
         </p>
         <div className="row space">
             <div className="column column-50">

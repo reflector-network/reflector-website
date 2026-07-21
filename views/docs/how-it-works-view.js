@@ -24,12 +24,14 @@ export default function HowItWorksView() {
             Price feeds for generic tokens get updated in a similar fashion, but nodes have to agree on the data pulled
             from external sources (CEX/DEX API, banks, forex venues, price aggregators, stock exchanges, derivative
             platforms, etc.) All historical price feed data is stored in the oracle contract and becomes immutable once
-            it is written to the contract storage.
+            it is written to the contract storage. Records are held in temporary storage subject to the contract&apos;s
+            history-retention period, so older entries can be evicted over time.
         </p>
         <p>
             Other contracts interact with oracle contracts, retrieving data stored earlier by Reflector consensus.
-            Consumers can fetch historical ranges, use cross-price calculation, utilize TWAP averaging, or simply pull
-            the most recent token price depending on the use-case.
+            Consumers can fetch historical ranges or simply pull the most recent token price depending on the use-case.
+            Cross-price and TWAP calculations are performed in the consumer contract — they are not methods on the
+            current Pulse oracle interface.
             Check the <a href="interface">usage section</a> for details on available oracle functions and{' '}
             <a href="examples">examples</a> for practical guidance.
         </p>
