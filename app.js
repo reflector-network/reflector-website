@@ -5,7 +5,9 @@ import {navigation, bindClickNavHandler} from '@stellar-expert/navigation'
 import Router from './views/router'
 import './styles.scss'
 
-window.explorerApiOrigin = 'https://api.stellar.expert'
+// In development use a same-origin path so the dev-server proxy (see webpack-config.js) fetches
+// /explorer server-side, avoiding the cross-origin 403 from api.stellar.expert. Production is unchanged.
+window.explorerApiOrigin = process.env.NODE_ENV === 'development' ? '' : 'https://api.stellar.expert'
 const appContainer = document.createElement('div')
 
 bindClickNavHandler(appContainer)
