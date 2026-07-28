@@ -63,7 +63,7 @@ export default function GettingStartedView() {
                 <p>
                     Our price feeds receive updates every 5 minutes. Since Reflector oracles operate non-stop, price data is written
                     to the temporary storage and can be evicted over time.
-                    Calling the <code>period()</code> function on the oracle contract will return a guaranteed contract history retention
+                    Calling the <code>history_retention_period()</code> function on the oracle contract will return a guaranteed contract history retention
                     period, usually 24 hours.
                 </p>
                 <p>
