@@ -1,0 +1,26 @@
+# Reflector
+
+> Reflector is a decentralized price-feed oracle for the Stellar network and Soroban smart contracts. A peer-to-peer cluster of trusted node operators aggregates on-chain and off-chain market data into tamper-proof, SEP-40-compatible price feeds. Reflector offers three oracles — Pulse, Beam, and Flare — governed by an XRF-token DAO. This site is a client-rendered single-page app; the full page text for machine readers is inlined in /llms-full.txt.
+
+## Oracles
+- [https://reflector.network/pulse](https://reflector.network/pulse): Pulse oracle — free-to-read price feeds with uniform 5-minute updates (SEP-40 interface).
+- [https://reflector.network/beam](https://reflector.network/beam): Beam oracle — faster updates for a small per-call XRF fee (burned) instead of an upkeep fee.
+- [https://reflector.network/flare](https://reflector.network/flare): Flare oracle — push price feeds (formerly "Subscriptions"): cluster nodes POST a signed webhook notification when a price-change threshold or heartbeat interval fires.
+- [https://reflector.network/flare/add](https://reflector.network/flare/add): Create a Flare subscription — choose a price pair, change threshold, heartbeat interval, webhook URL, and initial XRF deposit.
+
+## Documentation
+- [https://reflector.network/docs](https://reflector.network/docs): Getting started — integrate a Reflector price feed into a Soroban smart contract.
+- [https://reflector.network/docs/how-it-works](https://reflector.network/docs/how-it-works): How Reflector works — node consensus, price mechanics, and contract storage.
+- [https://reflector.network/docs/interface](https://reflector.network/docs/interface): Pulse contract interface — SEP-40 plus Reflector extensions, with copy-ready Rust.
+- [https://reflector.network/docs/examples](https://reflector.network/docs/examples): Worked Soroban usage examples that read Reflector prices.
+
+## Governance
+- [https://reflector.network/dao/blueprint](https://reflector.network/dao/blueprint): Reflector DAO and the XRF token — governance of feeds, subscriptions, and node operators.
+
+## Reference
+- Authoritative contract-address registry: https://developers.stellar.org/docs/data/oracles/oracle-providers
+- SEP-40 price oracle standard: https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0040.md
+- Organization metadata (stellar.toml): https://reflector.network/.well-known/stellar.toml
+
+## Optional
+- [https://reflector.network/llms-full.txt](https://reflector.network/llms-full.txt): full page text inlined as markdown for machine readers.

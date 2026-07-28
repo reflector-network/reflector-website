@@ -1,0 +1,114 @@
+# Reflector — full text
+
+> Machine-readable full text of https://reflector.network. Reflector is a decentralized price-feed oracle for the
+> Stellar network and Soroban smart contracts: a peer-to-peer cluster of trusted node operators aggregates on-chain and
+> off-chain market data into tamper-proof, SEP-40-compatible price feeds. Reflector offers three oracles — Pulse, Beam,
+> and Flare — governed by an XRF-token DAO. Verify contract addresses against
+> https://developers.stellar.org/docs/data/oracles/oracle-providers before use.
+
+## Pulse oracle (/pulse)
+
+SEP-40-compatible Pulse oracles feature efficient ledger utilization for storing large amounts of data with uniform
+five-minute timeframes and a straightforward interface for consumer contracts, so integration is seamless even for
+inexperienced developers. Pulse oracles are openly available to any smart contract, but require someone to periodically
+pay oracle upkeep fees. Price reads themselves are free.
+
+## Beam oracle (/beam)
+
+Beam oracles offer much faster updates with 1-minute granularity and the largest selection of available price feeds.
+Reflector sends on-chain notifications once the price change for a specified asset reaches a certain threshold, and every
+2 hours all active feeds receive a periodic guaranteed update (heartbeat) to ensure price availability. End-users pay a
+small price-per-call fee (XRF, burned) each time they pull data from a Beam oracle; Beam oracles do not require the
+upkeep fee.
+
+## Flare oracle (/flare)
+
+The Flare oracle (formerly "Subscriptions") is a service for user-defined customized triggers invoked automatically once
+the price change for a specified asset reaches a certain threshold. Trigger conditions are evaluated by every oracle node
+in the cluster independently on a regular basis with a 1-minute polling interval, and the corresponding action is
+triggered only if the majority of nodes agree on the outcome.
+
+Once the condition is met and the subscription is triggered, the Reflector cluster publishes an on-chain proof of the
+triggered event. At the same time, cluster nodes simultaneously push a notification to the webhook URL provided in the
+subscription. This way an application that created a subscription receives a notification from the oracle before it is
+published on the ledger, so it can react quickly and generate a transaction included in the same ledger as the proof
+itself.
+
+Create a subscription at /flare/add by choosing a base/quote price pair, a change threshold (percent), a heartbeat
+interval (minutes), a webhook URL, and an initial XRF deposit. Tokens are charged from the balance on a daily basis, and
+the subscription remains active while its remaining balance stays positive. Cancelling a subscription refunds the
+remaining balance to the owner's account. Note that HTTP webhook delivery is off-chain and its timing is not guaranteed;
+the on-chain `triggered` event is the authoritative record. (Client package: `@reflector/subscription-client`.)
+
+## How it works (/docs/how-it-works)
+
+Reflector oracle contracts are controlled by the multisig-protected consensus of reputable organizations. The smart
+contract admin account always has all node public keys as co-signers with a >50% multisig threshold, so more than half of
+the oracle backing nodes must agree on a transaction to store price feed data or modify contract state.
+
+Each node independently calculates quoted prices using deterministic, idempotent algorithms, generates an update
+transaction, signs it with the node's private key, and shares it with peers via WebSocket. If any node quotes a price
+different from the others, its transaction hash will not match the majority hash and the transaction is discarded by the
+ledger. Reflector thus uses Stellar's underlying protocol security for an uncomplicated yet robust consensus.
+
+For on-chain Stellar assets, Reflector relies on a quorum of nodes connected to Stellar RPC; each fetches trades and
+state from the ledger. Generic tokens are updated similarly, but nodes must agree on data pulled from external sources
+(CEX/DEX APIs, banks, forex venues, aggregators, stock exchanges, derivative platforms). All historical price feed data
+is stored in the oracle contract and becomes immutable once written. Records are held in temporary storage subject to the
+contract's history-retention period, so older entries can be evicted over time.
+
+Consumers can fetch historical ranges or pull the most recent token price. Cross-price and TWAP calculations are
+performed in the consumer contract — they are not methods on the current Pulse oracle interface.
+
+## Pulse contract interface (/docs/interface)
+
+Public Reflector price feeds are available to all Stellar smart contracts — add the contract interface to your codebase.
+The contracts implement the SEP-40 standard trait (compatible with most Stellar ecosystem protocols), extending it with
+utility functions for historical price retrieval and asset-retention management.
+
+Oracle client interface (Rust, `#[contractclient(name = "ReflectorClient")]`):
+
+- `base() -> Asset` — base oracle symbol prices are reported in
+- `assets() -> Vec<Asset>` — all quoted assets
+- `decimals() -> u32` — decimal places for all quoted prices
+- `price(asset: Asset, timestamp: u64) -> Option<PriceData>` — price at a specific timestamp
+- `lastprice(asset: Asset) -> Option<PriceData>` — most recent price
+- `prices(asset: Asset, records: u32) -> Option<Vec<PriceData>>` — last N records
+- `resolution() -> u32` — feed resolution in seconds (5 minutes by default)
+- `history_retention_period() -> Option<u64>` — retention period in seconds (24 hours by default)
+- `last_timestamp() -> u64` — most recent update timestamp
+- `version() -> u32` — contract protocol version
+- `admin() -> Option<Address>` — contract admin address
+- `extend_asset_ttl(sponsor: Address, asset: Asset)` — extend an asset entry's TTL in contract storage
+- `expires(asset: Asset) -> Option<u64>` — asset expiration timestamp
+
+Types: `enum Asset { Stellar(Address), Other(Symbol) }` (on-chain asset vs external ticker) and
+`struct PriceData { price: i128, timestamp: u64 }`. The actual price is `price / 10^decimals()`. Always check the
+returned `timestamp` against the current ledger time to reject stale quotes. Reads return `Option`, so handle a missing
+quote instead of unwrapping blindly.
+
+## Getting started (/docs/getting-started, at /docs)
+
+Trustworthiness of the oracle and the security of the data source are critical when using oracles in decentralized
+applications. Reflector nodes report price feeds for all assets denominated in the contract's base asset using the
+precision from `decimals()`; prices are `i128` where the last N digits are the fractional part, so the value is
+`price/10^decimals`. Feeds update at a pre-defined resolution — Reflector oracle contracts default to a 5-minute
+resolution — and timestamps are normalized as `floor(unix_now()/resolution)*resolution`. Consumer contracts should check
+the returned timestamp against the current ledger timestamp to avoid stale quotes. Historical data is written to
+temporary storage and can be evicted over time; `history_retention_period()` returns the guaranteed retention period,
+usually 24 hours. The public Pulse price feed is free for everyone, without limitations (network resource fees still
+apply to your own transactions).
+
+## Usage examples (/docs/examples)
+
+Practical Soroban examples that read Reflector prices: forced position liquidation (collateralization checks via
+`lastprice`), an algorithmic stablecoin peg (a consumer-side TWAP averaged from `prices()`), and portfolio rebalancing
+(per-asset valuation via `lastprice`). Each is illustrative; production code must add its own authorization and safety
+checks.
+
+## Governance — Reflector DAO and XRF (/dao/blueprint)
+
+The Reflector DAO governs the oracle network: adding price feeds, operating the price-feed subscription service, and
+coordinating node operators. The XRF token is used for governance and as the fee token for paid services (Beam per-call
+fees and subscription upkeep are paid in XRF and burned). A subscription requires an XRF deposit; a daily upkeep charge
+draws it down, and the subscription stays active while its balance is positive.
