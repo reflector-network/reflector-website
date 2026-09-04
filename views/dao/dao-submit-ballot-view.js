@@ -1,7 +1,6 @@
 import React, {memo, useCallback, useState} from 'react'
 import {StrKey} from '@stellar/stellar-sdk'
-import {Amount, Button, Dropdown, InfoTooltip} from '@stellar-expert/ui-framework'
-import {navigation} from '@stellar-expert/navigation'
+import {Amount, Button, Dropdown, InfoTooltip, navigation} from '@stellar-expert/ui-framework'
 import {shortenString} from '@stellar-expert/formatter'
 import InfoLayoutView from '../pages/info-layout-view'
 import {invokeDaoFunction} from './dao-client'

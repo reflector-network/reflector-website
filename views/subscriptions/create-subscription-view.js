@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {AssetLink, Button, Dropdown} from '@stellar-expert/ui-framework'
+import {AssetLink, Button, Dropdown, navigation} from '@stellar-expert/ui-framework'
 import {shortenString} from '@stellar-expert/formatter'
-import {navigation} from '@stellar-expert/navigation'
 import AuthStateView from '../auth/auth-state-view'
 import {getSubscriptionDataSources} from './oracles'
 import {createSubscription} from './subscription-actions'

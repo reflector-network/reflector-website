@@ -1,6 +1,5 @@
 import React from 'react'
-import {usePageMetadata} from '@stellar-expert/ui-framework'
-import {Route, Switch} from 'react-router'
+import {usePageMetadata, Route, RouterSwitch} from '@stellar-expert/ui-framework'
 import NotFoundView from '../pages/not-found-page-view'
 import PageLayoutView from '../pages/page-layout-view'
 import DocsNavPanelView from './docs-nav-panel-view'
@@ -37,13 +36,13 @@ export default function DocsView() {
             </div>
             <div className="column column-66">
                 <div className="segment">
-                    <Switch>
+                    <RouterSwitch>
                         <Route path={`${docsRoot}`} exact component={GettingStartedView}/>
                         <Route path={`${docsRoot}/how-it-works`} component={HowItWorksView}/>
                         <Route path={`${docsRoot}/examples`} component={UsageExamplesView}/>
                         <Route path={`${docsRoot}/interface`} component={ContractInterfaceView}/>
                         <Route component={NotFoundView}/>
-                    </Switch>
+                    </RouterSwitch>
                 </div>
             </div>
         </div>

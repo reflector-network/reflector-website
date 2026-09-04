@@ -1,7 +1,6 @@
 import React from 'react'
 import {render} from 'react-dom'
-import {createToastNotificationsContainer, initMeta} from '@stellar-expert/ui-framework'
-import {navigation, bindClickNavHandler} from '@stellar-expert/navigation'
+import {createToastNotificationsContainer, initMeta, bindClickNavHandler} from '@stellar-expert/ui-framework'
 import Router from './views/router'
 import './styles.scss'
 
@@ -17,9 +16,9 @@ initMeta({
     description: 'decentralized price oracle for Stellar Network'
 })
 
-render(<Router history={navigation.history}/>, appContainer)
+//attach before rendering - components that look themselves up by id on mount (charts) find nothing in a detached tree
+document.body.appendChild(appContainer)
+render(<Router/>, appContainer)
 const preLoader = document.getElementById('pre-loader')
 preLoader.parentNode.removeChild(preLoader)
 createToastNotificationsContainer()
-
-document.body.appendChild(appContainer)

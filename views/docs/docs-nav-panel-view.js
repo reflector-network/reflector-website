@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {useLocation} from 'react-router'
+import {useLocation} from '@stellar-expert/ui-framework'
 import cn from 'classnames'
 import './nav-panel.scss'
 

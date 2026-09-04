@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
-import {useLocation} from 'react-router'
+import {useLocation} from '@stellar-expert/ui-framework'
 import cn from 'classnames'
 import './layout.scss'
 

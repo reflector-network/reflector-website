@@ -1,6 +1,6 @@
 {
   "name": "@reflector-network/reflector-website",
-  "version": "1.16.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Documentation website / Reflector / decentralized price oracle for Stellar Network",
   "scripts": {
@@ -13,23 +13,16 @@
   "dependencies": {
     "@albedo-link/intent": "^0.13.0",
     "@creit.tech/stellar-wallets-kit": "1.8.0",
-    "@reflector/dao-client": "1.4.1",
+    "@reflector/dao-client": "1.5.0",
     "@reflector/subscription-client": "0.5.3",
-    "@stellar-expert/asset-descriptor": "^1.5.0",
-    "@stellar-expert/client-cache": "^1.1.0",
-    "@stellar-expert/formatter": "^3.0.0",
-    "@stellar-expert/navigation": "^1.1.0",
-    "@stellar-expert/ui-framework": "1.19.1",
-    "@stellar/stellar-sdk": "15.1.0",
-    "@stellar/stellar-base": "15.0.0",
+    "@stellar-expert/formatter": "3.2.0",
+    "@stellar-expert/ui-framework": "3.0.1",
+    "@stellar/stellar-sdk": "17.0.1",
     "classnames": "^2.5.1",
     "deepmerge": "^4.2.2",
-    "highcharts": "8.1.0",
-    "history": "^4.10.1",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router": "^5.3.3",
     "throttle-debounce": "^5.0.0"
   },
   "devDependencies": {
@@ -38,17 +31,6 @@
     "@stellar-expert/webpack-template": "^1.5.1"
   },
   "overrides": {
-    "@stellar/stellar-sdk": "15.1.0",
-    "@stellar/stellar-base": "15.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "not ie 11",
-    "not op_mini all"
-  ],
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "core-js"
-    ]
+    "@stellar/stellar-sdk": "17.0.1"
   }
 }

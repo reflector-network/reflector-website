@@ -1,4 +1,4 @@
-import Chart from '../chart/chart'
+import {Chart} from '@stellar-expert/ui-framework'
 
 export default function DaoDistributionScheduleView() {
     return <>

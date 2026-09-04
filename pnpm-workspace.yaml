@@ -1,0 +1,24 @@
+autoInstallPeers: true
+
+allowBuilds:
+  blake-hash: false
+  bufferutil: false
+  core-js: true
+  protobufjs: false
+  secp256k1: false
+  tiny-secp256k1: false
+  usb: false
+  utf-8-validate: false
+
+minimumReleaseAgeExclude:
+  - '@reflector/dao-client@1.5.0'
+
+#the build toolchain must be reachable from the project root: webpack resolves `loader: 'babel-loader'` against the
+#compilation context, and the package scripts invoke the `webpack` binary from node_modules/.bin. Everything else
+#stays isolated so transitive packages keep their own dependency versions.
+publicHoistPattern:
+  - '*-loader'
+  - '@babel/preset-*'
+  - 'webpack'
+  - 'webpack-cli'
+  - 'webpack-dev-server'

@@ -1,6 +1,5 @@
 import React from 'react'
-import {useLocation} from 'react-router'
-import {CodeBlock, usePageMetadata} from '@stellar-expert/ui-framework'
+import {CodeBlock, usePageMetadata, useLocation} from '@stellar-expert/ui-framework'
 import {examples} from './examples'
 
 export default function UsageExamplesView() {

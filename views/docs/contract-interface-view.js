@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import {useParams} from 'react-router'
-import {CodeBlock, CopyToClipboard, Dropdown} from '@stellar-expert/ui-framework'
+import {CodeBlock, CopyToClipboard, Dropdown, parseQuery} from '@stellar-expert/ui-framework'
 import {generateReflectorClient, generateReflectorClientInvocation} from '../contract/oracle-public-feed-codegen'
 import {fetchOracleConfig} from '../contract/oracle-contract-data'
 import {resolveOracleMeta} from '../contract/oracle-source'
 import OracleNetworkSelector from '../live/oracle-network-selector'
-import {parseQuery} from '@stellar-expert/navigation'
 
 export default function ContractInterfaceView() {
     const params = parseQuery()

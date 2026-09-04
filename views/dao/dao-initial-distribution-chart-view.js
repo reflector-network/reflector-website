@@ -1,12 +1,8 @@
 import React from 'react'
-import Chart from '../chart/chart'
-import {formatWithAutoPrecision} from '@stellar-expert/formatter'
+import {Chart} from '@stellar-expert/ui-framework'
 
 export default function DaoInitialDistributionChartView() {
     const options = {
-        tooltip: {
-            pointFormatter
-        },
         chart: {
             type: 'variablepie'
         },
@@ -14,8 +10,8 @@ export default function DaoInitialDistributionChartView() {
             minPointSize: 20,
             innerSize: '40%',
             zMin: 0,
-            name: 'Share',
-            borderRadius: 5,
+            name: 'XRF',
+            showInLegend: true, //pie legend is opt-in in the charting engine, unlike the Highcharts default
             data: [
                 {
                     name: 'Early protocol adopters',
@@ -43,8 +39,4 @@ export default function DaoInitialDistributionChartView() {
     return <div className="text-center">
         <Chart type="Chart" options={options} inline/>
     </div>
-}
-
-function pointFormatter() {
-    return `<b>${formatWithAutoPrecision(this.y)}</b> XRF<br/>`
 }

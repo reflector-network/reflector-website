@@ -1,4 +1,3 @@
-import {Asset, Networks} from '@stellar/stellar-sdk'
 import {toStroops} from '@stellar-expert/formatter'
 import SubscriptionClient from '@reflector/subscription-client'
 import {addOwnSubscription, removeOwnSubscription} from './subscriptions-storage'
@@ -52,14 +51,6 @@ export async function cancelSubscription(id) {
 export async function depositToSubscription(id, amount) {
     const client = await createClient()
     return await client.deposit(id, amount)
-}
-
-function normalizeAsset(symbol) {
-    if (symbol.length > 52) {//stellar asset
-        const parts = symbol.split(':')
-        symbol = (parts.length === 2 ? new Asset(parts[0], parts[1]) : Asset.native()).contractId(Networks.PUBLIC) //TODO: retrieve dynamically
-    }
-    return symbol
 }
 
 /**

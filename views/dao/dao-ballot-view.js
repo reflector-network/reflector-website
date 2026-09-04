@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useParams} from 'react-router'
-import {AccountAddress, UtcTimestamp} from '@stellar-expert/ui-framework'
+import {AccountAddress, UtcTimestamp, useParams} from '@stellar-expert/ui-framework'
 import InfoLayoutView from '../pages/info-layout-view'
 import {invokeDaoFunction} from './dao-client'
 import {DaoBallotVotingInfoView} from './dao-ballot-voting-info-view'

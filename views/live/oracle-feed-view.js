@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useParams} from 'react-router'
-import {AccountAddress, CopyToClipboard, Tabs} from '@stellar-expert/ui-framework'
+import {AccountAddress, CopyToClipboard, Tabs, useParams} from '@stellar-expert/ui-framework'
 import PageLayoutView from '../pages/page-layout-view'
 import {fetchOracleConfig} from '../contract/oracle-contract-data'
 import {OracleDescription, OracleSource} from '../contract/oracle-source'
