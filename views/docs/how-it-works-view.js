@@ -62,8 +62,8 @@ const components = [
     },
     {
         title: 'Contract JavaScript bindings',
-        link: 'https://github.com/reflector-network/oracle-client',
-        description: 'Provides convenient JS wrappers for interaction with the contract from JS runtime'
+        link: 'https://github.com/reflector-network/contract-client-js',
+        description: 'Provides convenient JS wrappers for interaction with Reflector contracts'
     },
     {
         title: 'Stellar Core DB connector',
@@ -74,13 +74,5 @@ const components = [
         title: 'Admin dashboard',
         link: 'https://github.com/reflector-network/admin-dashboard',
         description: 'Web interface for Reflector node operators, toolkit for managing Reflector cluster and orchestrating updates'
-    },
-    {
-        title: 'Node API emulator',
-        description: 'Utility for testing admin dashboard with various emulated node/cluster states'
-    },
-    {
-        title: 'Stellar trades emulator',
-        description: 'Simple trading bot for generating relevant trades activity on Testnet and Futurenet'
     }
 ]

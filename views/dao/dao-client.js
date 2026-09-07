@@ -1,4 +1,4 @@
-import DaoClient from '@reflector/dao-client'
+import {DaoClient} from '@reflector/contract-client'
 import {connectWalletsKit} from '../auth/wallet'
 
 const contractId = 'CBQSUF57OYX4RIMCZV62DKN6JFOTEKPHIZASMJYOUOCNHGNG2P3XQLSE'

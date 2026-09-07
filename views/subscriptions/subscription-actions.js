@@ -1,5 +1,5 @@
 import {toStroops} from '@stellar-expert/formatter'
-import SubscriptionClient from '@reflector/subscription-client'
+import {FlareClient} from '@reflector/contract-client'
 import {addOwnSubscription, removeOwnSubscription} from './subscriptions-storage'
 import {connectWalletsKit, getCurrentAccount} from '../auth/wallet'
 
@@ -50,21 +50,21 @@ export async function cancelSubscription(id) {
 
 export async function depositToSubscription(id, amount) {
     const client = await createClient()
-    return await client.deposit(id, amount)
+    return await client.deposit(id, amount, getCurrentAccount())
 }
 
 /**
- * @return {Promise<SubscriptionClient>}
+ * @return {Promise<FlareClient>}
  */
 async function createClient(readonly = false) {
     const {address, kit} = await connectWalletsKit(readonly ? 'readonly' : 'default')
         .catch(e => notify({type: 'error', message: e.message}))
     if (!address)
         throw new Error('Authentication required. Please log in.')
-    return new SubscriptionClient({
+    return new FlareClient({
         publicKey: address,
-        defaultFee: '100000',
-        callTimeout: 600,
+        fee: '100000',
+        timeout: 600,
         rpcUrl: 'https://mainnet.sorobanrpc.com',
         signTransaction: (xdr, opts) => kit.signTransaction(xdr, {address, networkPassphrase: opts.networkPassphrase})
             .catch(e => notify({type: 'error', message: e.message}))

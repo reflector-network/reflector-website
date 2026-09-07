@@ -1,4 +1,4 @@
-import {getAvailableReflectorTickers} from '@reflector/subscription-client'
+import {getAvailableReflectorTickers} from '@reflector/contract-client'
 
 let dataSources
 

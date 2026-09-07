@@ -7,6 +7,7 @@ import LayoutView from './pages/layout-view'
 import DaoRouter from './dao/dao-router'
 import AllFeedsView, {AllBeamFeedsView, AllPulseFeedsView} from './live/all-feeds-view'
 import OracleFeedView from './live/oracle-feed-view'
+import ExtendAssetTtlView from './contract/extend-asset-ttl-view'
 
 export default function AppRouter() {
     return <Router>
@@ -15,6 +16,7 @@ export default function AppRouter() {
                 {/*<Route path="/" exact component={Home}/>*/}
                 {/*tools*/}
                 <Route path="/" exact component={IntroPageView}/>
+                <Route path="/oracles/:network/:address/extend" component={ExtendAssetTtlView}/>
                 <Route path="/oracles/:network/:address" component={OracleFeedView}/>
                 <Route path="/pulse" component={AllPulseFeedsView}/>
                 <Route path="/beam" component={AllBeamFeedsView}/>

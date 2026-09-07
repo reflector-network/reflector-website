@@ -37,6 +37,14 @@ export default function OracleFeedView() {
                     <span className="dimmed">Network: </span>
                     {network === 'public' ? 'Mainnet' : 'Testnet'}
                 </div>
+                <div>
+                    <span className="dimmed">Feeds: </span>
+                    {contract.assets.length}
+                    {network === 'public' && <span>{' '}
+                        <a href={`/oracles/${network}/${address}/extend`}>
+                            <i className="icon-clock"/> Extend TTL</a>
+                    </span>}
+                </div>
                 <OracleContractInfo {...{contract, network}}/>
             </div>
             {contract.type === 'oracle' && <div className="micro-space text-small">

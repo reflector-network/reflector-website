@@ -25,7 +25,7 @@ pub trait Contract {
     fn last_timestamp() -> u64;
     // Contract protocol version
     fn version() -> u32;
-    // Extend asset TTL (time-to-live) in the contract storage
+    // Extend price feed TTL (time-to-live) in the contract storage
     fn extend_asset_ttl(sponsor: Address, asset: Asset);
     // Get asset expiration timestamp
     fn expires(asset: Asset) -> Option<u64>;

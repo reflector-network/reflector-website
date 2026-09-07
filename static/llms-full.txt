@@ -38,7 +38,7 @@ Create a subscription at /flare/add by choosing a base/quote price pair, a chang
 interval (minutes), a webhook URL, and an initial XRF deposit. Tokens are charged from the balance on a daily basis, and
 the subscription remains active while its remaining balance stays positive. Cancelling a subscription refunds the
 remaining balance to the owner's account. Note that HTTP webhook delivery is off-chain and its timing is not guaranteed;
-the on-chain `triggered` event is the authoritative record. (Client package: `@reflector/subscription-client`.)
+the on-chain `triggered` event is the authoritative record. (Client package: `@reflector/contract-client`.)
 
 ## How it works (/docs/how-it-works)
 

@@ -24,11 +24,11 @@ export default function OracleContractInfo({contract, network}) {
         </div>
         <div>
             {/*<span className="dimmed">Type: </span> {contract.type === 'oracle_beam' ? "Beam" : "Pulse"}<br/>
-*/}            <span className="dimmed">Base symbol: </span> {contract.baseAsset.type === 2 ? contract.baseAsset.code :
+*/} <span className="dimmed">Base symbol: </span> {contract.baseAsset.type === 2 ? contract.baseAsset.code :
             <AssetLink asset={contract.baseAsset.code}/>}<br/>
             <span className="dimmed">Decimals: </span>{contract.decimals || 14}<br/>
             <span className="dimmed">Sampling: </span>{contract.timeframe / 1000 / 60} minutes<br/>
-            <span className="dimmed">Retention: </span>{contract.period / 1000 / 60 / 60} hours
+            <span className="dimmed">Retention: </span>{Math.floor(contract.period / 1000 / 60 / 6) / 10} hours
         </div>
     </>
 }
